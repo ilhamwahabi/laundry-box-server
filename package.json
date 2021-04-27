@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +13,8 @@
     "axios": "^0.21.1",
     "express": "^4.17.1",
     "mqtt": "^4.2.6"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }

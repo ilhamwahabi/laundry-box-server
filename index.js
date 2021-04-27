@@ -21,6 +21,10 @@ client.on("message", (topic, message) => {
   console.log("Received message", { topic, message })
 })
 
+app.get("/", (request, response) => {
+  response.send(`Laundry Box server is ${client.connected ? "connected" : "not connected"} to Xirka IoT Platform`)
+})
+
 app.post("/confirm", (request, response) => {
   if (client.connected) {
     client.publish("ESP32ToPublish", {
