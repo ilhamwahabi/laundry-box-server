@@ -1,6 +1,5 @@
 const express = require("express")
 const mqtt = require('mqtt')
-const axios = require('axios')
 
 const app = express()
 
@@ -12,13 +11,17 @@ const client = mqtt.connect("mqtt://202.148.1.57:1883", {
 client.on("connect", () => {
   console.log("Connected to Xirka server!")
 
-  client.subscribe('ESP32ToSubscribe', (error) => {
-    console.log("Subscribed to Xirka device")
+  client.subscribe('ESP32ToPublish', (error) => {
+    if (!error) {
+      console.log("Subscribed to Xirka device")
+    } else {
+      console.log(error)
+    }
   })
 })
 
 client.on("message", (topic, message) => {
-  console.log("Received message", { topic, message })
+  console.log(`Received message, topic: ${topic}`)
 })
 
 app.get("/", (request, response) => {
@@ -27,7 +30,7 @@ app.get("/", (request, response) => {
 
 app.post("/confirm", (request, response) => {
   if (client.connected) {
-    client.publish("ESP32ToPublish", {
+    client.publish("ESP32ToSubscribe", {
       payload: {
         status: 1
       }
