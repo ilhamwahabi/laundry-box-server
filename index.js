@@ -42,11 +42,17 @@ app.get("/", (request, response) => {
 
 app.post("/confirm", (request, response) => {
   if (client.connected) {
-    client.publish("ESP32ToSubscribe", JSON.parse({
-      payload: {
-        status: 1
-      }
-    }))
+    console.log({ request, response })
+    client.publish(
+      "ESP32ToSubscribe",
+      JSON.stringify({
+        payload: {
+          status: 1
+        }
+      })
+    )
+    console.log("Confirmed")
+    response.status(200).send("Confirmed")
   }
 })
 
