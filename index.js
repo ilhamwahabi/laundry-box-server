@@ -1,7 +1,15 @@
 const express = require("express")
 const mqtt = require('mqtt')
+const admin = require("firebase-admin");
+
+const serviceAccount = require("./service-account.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 const app = express()
+const firestore = admin.firestore()
 
 const client = mqtt.connect("mqtt://202.148.1.57:1883", {
   username: "app-smartlaundrysystem",
@@ -21,7 +29,11 @@ client.on("connect", () => {
 })
 
 client.on("message", (topic, message) => {
-  console.log(`Received message, topic: ${topic}`)
+  console.log(`Received message, topic: ${topic}`, message.toString())
+  firestore.collection('laundries').add({
+    ...JSON.parse(message.toString()).payload,
+    status: "received"
+  })
 })
 
 app.get("/", (request, response) => {
@@ -30,11 +42,11 @@ app.get("/", (request, response) => {
 
 app.post("/confirm", (request, response) => {
   if (client.connected) {
-    client.publish("ESP32ToSubscribe", {
+    client.publish("ESP32ToSubscribe", JSON.parse({
       payload: {
         status: 1
       }
-    })
+    }))
   }
 })
 
