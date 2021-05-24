@@ -40,6 +40,12 @@ app.get("/", (request, response) => {
   response.send(`Laundry Box server is ${client.connected ? "connected" : "not connected"} to Xirka IoT Platform`)
 })
 
+app.get("/data", async (request, response) => {
+  const results = await firestore.collection('laundries').get();
+  const laundries = results.docs.map(result => result.data())
+  response.send(laundries)
+})
+
 app.post("/confirm", (request, response) => {
   if (client.connected) {
     console.log({ request, response })
