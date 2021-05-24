@@ -46,6 +46,14 @@ app.get("/data", async (request, response) => {
   response.send(laundries)
 })
 
+app.delete("/reset", async (request, response) => {
+  const results = await firestore.collection('laundries').get();
+  for await (const result of results.docs) {
+    firestore.collection('laundries').doc(result.id).delete()
+  }
+  response.send("All data succesfully deleted")
+})
+
 app.post("/confirm", (request, response) => {
   if (client.connected) {
     console.log({ request, response })
